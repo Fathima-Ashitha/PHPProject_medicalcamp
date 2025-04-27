@@ -1,0 +1,46 @@
+.booked{
+    background-color:red;
+    color:white;
+    padding:10px;
+    margin:5px;
+    cursor:not-allowed;
+}
+.time{
+    padding:10px;
+    margin:5px;
+}
+.time:hover{
+    background-color:green;
+}
+header{
+    margin:0;
+    text-align:center;
+    padding:20px;
+    background-color: blue;
+}
+h3{
+    text-align:center;
+    color:red;
+}
+div{
+    text-align:center;
+}
+#submit{
+    padding:8px;
+    border:none;
+    color:white;
+    border-radius:4px;
+    margin-top:15px;
+}
+h2{
+    text-shadow:1px 2px 10px rgb(47, 104, 164);
+    color:#004d40;
+    margin-top:10px;
+    margin-bottom:15px;
+    text-align:center;
+ }
+ body{
+    text-align:center;
+    margin:150px;
+    background-color: #e0f7fa;
+}

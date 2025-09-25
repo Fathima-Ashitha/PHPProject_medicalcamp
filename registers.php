@@ -32,7 +32,7 @@ $address = $_POST['address'];
 $sql = "SELECT * FROM staff WHERE sname='$sname' AND email='$email' AND address='$address' AND cid='$cid'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
-        echo "<h2>Already registered.</h2>";
+        echo "<h3>Already registered.</h3>";
     } else {
         $sql = "SELECT MAX(sid) AS largesid FROM staff WHERE cid='$cid'";
         $result = $conn->query($sql);
@@ -45,9 +45,9 @@ $sql = "SELECT * FROM staff WHERE sname='$sname' AND email='$email' AND address=
     $sql = "INSERT INTO staff (cid, sid, sname, email, password, phone, address) VALUES 
     ('$cid','$sid','$sname', '$email','$password', '$phone','$address')";
     if ($conn->query($sql)) {
-        echo "<h2>Registration successfull</h2>";
+        echo "<span class=success>Registration successfull</span>";
     } else {
-        echo "<h2>Error</h2>";
+        echo "<h3>Error</h3>";
     }
     echo '</div>';
 }

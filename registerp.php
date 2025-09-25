@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
  $sql = "SELECT * FROM patient WHERE name='$name' AND age='$age' AND address='$address' AND email='$email' AND cid='$cid'";
     $result = $conn->query($sql);
     if ($result->num_rows > 0) {
-        echo "<h2>Already registered.</h2>";
+        echo "<h3>Already registered.</h3>";
     } else {
         $sql = "SELECT MAX(pid) AS largepid FROM patient WHERE cid='$cid'";
         $result = $conn->query($sql);
@@ -50,14 +50,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } 
         $pid = $nowpid + 1;
 
-
         $sql = "INSERT INTO patient (cid, pid, name, age, gender, phone, address, email, password) 
                 VALUES ('$cid', '$pid', '$name', '$age', '$gender', '$phone', '$address', '$email', '$password')";
         if ($conn->query($sql) === TRUE) {
             $last_id = $conn->insert_id;
-            echo "<h2>Registration Successful</h2>";
+            echo "<span class=success>Registration Successful</span>";
         } else {
-            echo "<h2>Error</h2>";
+            echo "<h3>Error</h3>";
         }
     }
 }

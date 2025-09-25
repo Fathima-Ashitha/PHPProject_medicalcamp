@@ -12,6 +12,7 @@
 </body>
 </html>
 <?php
+
 session_start();
 
 function conn(){
@@ -81,62 +82,62 @@ function has_appointment($conn,$date,$pid,$cid){
     $row=$result->fetch_assoc();
     return $row['count']==0;
 }
-if(isset($_POST['submit'])){
-    $conn=conn();
-    $startt=$_SESSION['startt'];
-    $endt=$_SESSION['endt'];
+if (isset($_POST['submit'])) {
+    $conn = conn();
+    $startt = $_SESSION['startt'];
+    $endt = $_SESSION['endt'];
+        $start = $_SESSION['start']; //  d-m-y
+        $end = $_SESSION['end']; 
+        $date = $_POST['date'];
+        $currentDate = date('Y-m-d');
+    if ($date >= $currentDate){
+        
+        $startTimestamp = strtotime($start);
+        $endTimestamp = strtotime($end);
+        $inputTimestamp = strtotime($date);
+    
+        
+        if ($inputTimestamp >= $startTimestamp && $inputTimestamp <= $endTimestamp) {
     
 
-    $start=$_SESSION['start'];
-    $end=$_SESSION['end'];
-    $date=$_POST['date'];
+            $dateFormatted = date("d-m-y", strtotime($date));
+            $cid = $_SESSION['cid'];
+            $pid = $_SESSION['pid'];
 
-    //$dateObj = new DateTime($date);
-    //$startObj = new DateTime($start);
-   // $endObj = new DateTime($end);
-    
-    
-    //if ($dateObj >= $startObj && $dateObj <= $endObj) {
+            if (has_appointment($conn, $date, $pid, $cid)) {
+                echo '<form method="post" action="">';
+                echo '<input type="hidden" name="pid" value="' . htmlspecialchars($pid) . '">';
+                echo '<input type="hidden" name="cid" value="' . htmlspecialchars($cid) . '">';
+                echo '<input type="hidden" name="date" value="' . htmlspecialchars($date) . '">';
+                echo '<input type="hidden" name="datee" value="' . htmlspecialchars($dateFormatted) . '">';
+                echo '<h3>Slots of ' . htmlspecialchars($dateFormatted) . ':</h3>';
 
+                $available_slots = show_slots($conn, $date, $cid, $startt, $endt);
+                
+                echo '<h4>Morning:</h4>';
+                foreach ($available_slots['all_morning'] as $slot) {
+                    $class = in_array($slot, $available_slots['morning']) ? 'time' : 'booked';
+                    echo '<button type="submit" name="time" value="' . htmlspecialchars($slot) . '" class="' . $class . '">' . htmlspecialchars($slot) . '</button>';
+                }
 
-    $datee=strtotime($date);
-    $datee= date("d-m-y", $datee);
-    $cid=$_SESSION['cid'];
-    $pid=$_SESSION['pid'];
-    if(has_appointment($conn,$date,$pid,$cid))
-    
-    {   echo '<form method=post action="">';
-        echo '<input type=hidden name="pid" value="'.$pid.'">';
-        echo '<input type=hidden name="cid" value="'.$cid.'">';
-        echo '<input type=hidden name="date" value="'.htmlspecialchars($date).'">';
-        echo '<input type=hidden name="datee" value="'.htmlspecialchars($datee).'">';
-        echo '<h3>Slots of '.htmlspecialchars($datee).':</h3>';
- $available_slots=show_slots($conn,$date,$cid,$startt,$endt);
-        echo '<h4>Morning:</h4>';
- foreach($available_slots['all_morning'] as $slot){
- if(in_array($slot,$available_slots['morning'])){
-            $class='time';
-         }else{
-            $class='booked';
-         }
-        echo '<button type="submit" name="time" value="'.htmlspecialchars($slot).'" class="'.$class.'">'.htmlspecialchars($slot).'</button>';
-    }
-        echo '<h4>Evening:</h4>';
- foreach($available_slots['all_evening'] as $slot){
- if(in_array($slot,$available_slots['evening'])){
-            $class='time';
-        }else{
-            $class='booked';
+                echo '<h4>Evening:</h4>';
+                foreach ($available_slots['all_evening'] as $slot) {
+                    $class = in_array($slot, $available_slots['evening']) ? 'time' : 'booked';
+                    echo '<button type="submit" name="time" value="' . htmlspecialchars($slot) . '" class="' . $class . '">' . htmlspecialchars($slot) . '</button>';
+                }
+
+                echo '</form>'; 
+            } else {
+                echo "<h3>You already have an appointment on this date</h3>";
+            }
+        } else {
+            echo "<h3>Not valid Date</h3>";
         }
-        echo '<button type="submit" name="time" value="'.htmlspecialchars($slot).'" class="'.$class.'">'.htmlspecialchars($slot).'</button>';
-    }
     }else{
-        echo "<h3>You already have an appointment on this date</h3>";
-    } 
- }else{
-    echo "<h3>Not A Valid Date</h3>";
- }
+        echo "<h3>Not valid Date</h3>";
+    }
 }
+
 if(isset($_POST['time'])){
     $conn= conn();
     $cid=$_POST['cid'];
@@ -144,6 +145,18 @@ if(isset($_POST['time'])){
     $date=$_POST['date'];
     $datee=$_POST['datee'];
     $time=$_POST['time'];
+    
+    $currentDateTime = new DateTime();
+    $currentDateTime->modify('+4 hours +30 minutes'); // Add 4 hours and 30 minutes
+    $currentDate = $currentDateTime->format('Y-m-d');
+    $currentTime = $currentDateTime->format('H:i');
+
+    if ($date == $currentDate && $time <= $currentTime) 
+   
+   {
+        echo "<h3>Cannot schedule in the past</h3>";
+    } else {
+
     if(!available($conn, $date, $time,$cid)){
         echo "<h3>This time slot is already booked by another person</h3>";
     }else{
@@ -153,6 +166,7 @@ if(isset($_POST['time'])){
         }else{
             echo "Error";
         }
+    }
     }
 }
 ?>

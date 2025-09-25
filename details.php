@@ -14,7 +14,7 @@
     $cid=$_SESSION['cid'];
     $sql="SELECT * FROM staff WHERE cid='$cid'";
     $result=$conn->query($sql);
-    if($result){
+    if($result->num_rows>0){
    echo "<table border=1> <tr><th>SID</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th></tr>";
     while($row=$result->fetch_assoc())
     {
@@ -23,7 +23,7 @@
     }
     echo '</table>';
     }else{
-         echo "Nothing";
+         echo "<h3>Nothing</h3>";
         }
     ?>
     </body>

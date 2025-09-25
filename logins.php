@@ -33,13 +33,14 @@
         if ($password===$row['password']) {
           session_start();
           $_SESSION['sid']=$row['sid'];
-header("Location:dashs.html");
+          $_SESSION['sname']=$row['sname'];
+header("Location:dashs.php");
             exit();
         } else {
-           echo "<h2>Invalid Password</h2>";
+           echo "<h3>Invalid Password</h3>";
          }
     } else {
-       echo "<h2>No user found</h2>";
+       echo "<h3>No user found</h3>";
       }
       echo"</div>";
  }

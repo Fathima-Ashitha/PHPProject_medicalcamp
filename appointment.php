@@ -16,9 +16,10 @@
     
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
-                echo "<b>Date</b>: " . htmlspecialchars($row['date']) . " AND <b> Time</b>: " . htmlspecialchars($row['time']);
+                echo "<b>Date</b>: " . htmlspecialchars($row['date']) . "<br><b> Time</b>: " . htmlspecialchars($row['time']);
                 echo "<form method=post action=editappoint.php><input type='hidden' name='pid' value='" . $row['pid'] . "'>";
-                echo "<input type='hidden' name='date' value='" . htmlspecialchars($row['date']) . "'>";  
+                echo "<input type='hidden' name='date' value='" . htmlspecialchars($row['date']) . "'>";
+                echo "<input type='hidden' name='tim' value='" . htmlspecialchars($row['time']) . "'>";
                 echo "<button type='submit' style='display:inline-block; width:48%; margin-right:4%' name='update'>Update</button>";
                 echo "<button type='submit' style='display:inline-block; width:48%;' name='delete'>Delete</button></form>";
                 

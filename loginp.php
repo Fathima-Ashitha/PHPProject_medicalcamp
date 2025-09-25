@@ -34,16 +34,16 @@
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         if ($password===$row['password']) {
-          session_start();
+          
           $_SESSION['pname']=$name;
           $_SESSION['pid']=$row['pid'];
-header("Location:dashp.html");
+header("Location:dashp.php");
             exit();
         } else {
-           echo "<h2>Invalid Password</h2>";
+           echo "<h3>Invalid Password</h3>";
          }
     } else {
-       echo "<h2>No user found with this username.</h2>";
+       echo "<h3>No user found with this username.</h3>";
       }
       echo"</div>";
  }

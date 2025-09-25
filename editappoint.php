@@ -5,6 +5,15 @@
 <body>
 <?php
 session_start();
+function getModifiedDateTime() {
+    $currentDateTime = new DateTime();
+    $currentDateTime->modify('+4 hours +30 minutes'); // Add 4 hours and 30 minutes
+    
+    return [
+        'currentDate' => $currentDateTime->format('Y-m-d'),
+        'currentTime' => $currentDateTime->format('H:i')
+    ];
+}
 function conn(){
     $conn=mysqli_connect("localhost","root","","camp");
  if(!$conn){
@@ -18,6 +27,14 @@ if (isset($_POST['time'])) {
     $date = $_POST['date'];
     $cid = $_SESSION['cid'];
 
+    $result = getModifiedDateTime();
+    $currentDate = $result['currentDate'];
+    $currentTime = $result['currentTime'];
+
+    if ($date == $currentDate && $time <= $currentTime) {
+        echo "<h3>Cannot schedule in the past</h3>";
+    } else {
+    
     if (!available($conn, $date, $time, $cid)) {
         echo "<h3>This time slot is already booked by another person</h3>";
     } else {
@@ -29,25 +46,47 @@ if (isset($_POST['time'])) {
         }
     }
 }
+}
 if (isset($_POST['delete'])) {
     $conn = conn();
     $pid = $_POST['pid'];
     $date=$_POST['date'];
+    $time=$_POST['tim'];
+    $result = getModifiedDateTime();
+    $currentDate = $result['currentDate'];
+    $currentTime = $result['currentTime'];
+    if ($date == $currentDate && $time < $currentTime) {
+        echo "<h3>Time Expired</h3>";
+    } else {
+        if ($date >= $currentDate){
+
     $sql = "DELETE FROM appointment WHERE pid='$pid' AND date='$date'";
     if ($conn->query($sql)) {
         echo "<h3>Appointment deleted successfully.</h3>";
     } else {
         echo "Error deleting appointment.";
     }
-}
+    }else{
+        echo"<h3>Date expired</h3>";
+    }
+}}
 if (isset($_POST['update'])) {
     $conn = conn();
     $pid = $_POST['pid'];
     $date = $_POST['date'];
+    $time=$_POST['tim'];
     $cid = $_SESSION['cid'];
     $startt = $_SESSION['startt'];
     $endt = $_SESSION['endt'];
+    $result = getModifiedDateTime();
+    $currentDate = $result['currentDate'];
+    $currentTime = $result['currentTime'];
 
+    if ($date < $currentDate || ($date == $currentDate && $time <= $currentTime)) {
+        echo "<h3>Time expired</h3>";
+    } else {
+
+    if ($date >= $currentDate){
     echo "<h2>Select a new time for the appointment on " . htmlspecialchars($date) . ":</h2>";
     $available_slots = show_slots($conn, $date, $cid, $startt, $endt);
     
@@ -68,7 +107,10 @@ if (isset($_POST['update'])) {
     }
     
     echo '</form>';
+}else{
+    echo "<h3>Date Expired</h3>";
 }
+}}
 function generate_slots($start,$end,$min){
     $interval=$min*60;
     $slots=[];

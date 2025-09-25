@@ -19,16 +19,10 @@ function conn(){
     }return $conn;
 }
 function patient($pid,$cid){
-        $conn=conn();
-        $sql="SELECT * FROM patient WHERE pid='$pid' AND cid='$cid'";
-        $result=$conn->query($sql);
-        return $result->fetch_assoc();
-}
-function update($pid,$cid,$name,$age,$gender,$phone,$address,$email){
     $conn=conn();
-    $sql="UPDATE patient SET name='$name',age='$age',gender='$gender',phone='$phone',
-           address='$address',email='$email' WHERE pid='$pid' AND cid='$cid'";
-    return $conn->query($sql);
+    $sql="SELECT * FROM patient WHERE pid='$pid' AND cid='$cid'";
+    $result=$conn->query($sql);
+    return $result->fetch_assoc();
 }
 
         $row=patient($pid,$cid);
@@ -41,7 +35,7 @@ function update($pid,$cid,$name,$age,$gender,$phone,$address,$email){
         echo "<tr><td>Email</td><td><input type=email name=email value='".$row['email']."'</td></tr></table>";
         echo "<br><input type=submit name=submit value=Edit>";
         ?>
-        <a href="dashp.html">Back</a>
+        
       </form>
 <?php
 if(isset($_POST['submit'])){
@@ -54,11 +48,18 @@ if(isset($_POST['submit'])){
     $row=patient($pid,$cid);
     if($name==$row['name'] && $age==$row['age'] && $gender==$row['gender'] && $phone==$row['phone'] &&
        $address==$row['address'] && $email==$row['email']){
-        echo "<h2>No Changes Done</h2>";
-    }else if(update($pid,$cid,$name,$age,$gender,$phone,$address,$email)){
-        header("Location:profilep.php");
-        exit();
-    }
+        echo "<h3>No Changes Done</h3>";
+    }else {
+        $conn=conn();
+        $sql="UPDATE patient SET name='$name',age='$age',gender='$gender',phone='$phone',
+           address='$address',email='$email' WHERE pid='$pid' AND cid='$cid'";
+        if($conn->query($sql)){
+            echo "<span class=success>Done</span>";
+            $_SESSION['pname']=$name;
+            header("refresh:2;url=profilep.php");
+            exit();
+        }
+}
 }
 ?>
 </div>

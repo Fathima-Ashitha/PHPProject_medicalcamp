@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>changep</title>
+<title>changes</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,12 +19,13 @@ Enter new password:<input type="password" name="password" required><br>
 function present($conn,$name,$email,$cid){
     $sql="SELECT * FROM staff WHERE sname='$name' AND email='$email' AND cid='$cid'";
     $result=$conn->query($sql);
-    if($row=$result->fetch_assoc()){
-        if($email===$row['email'] && $name===$row['sname']){
-            return true;}
-        }
-        return false;
-        }
+if ($result->num_rows > 0){
+    $row=$result->fetch_assoc();
+    if ($email===$row['email']){
+    return true;}
+}
+return false;
+}
 if(isset($_POST['submit'])){
     $name=$_POST['name'];
     $email=$_POST['email'];
@@ -38,11 +39,11 @@ if(isset($_POST['submit'])){
    if(present($conn,$name,$email,$cid)){
      $sql="UPDATE staff SET password='$password' WHERE sname='$name' AND email='$email' AND cid='$cid'";
      if($conn->query($sql)){
-      echo"<h2>Done</h2>";
+      echo"<span class=success>Done</span>";
          }
     } 
     else
-    {echo"<h2>No user found</h2>";
+    {echo"<h3>No user found</h3>";
     }
 }
 echo "</div>";

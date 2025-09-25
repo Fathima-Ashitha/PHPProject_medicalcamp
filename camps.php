@@ -67,16 +67,15 @@
     <div class="camp-list">
         <?php
         $conn = mysqli_connect("localhost", "root", "", "camp");
-        $sql = "SELECT * FROM camps ORDER BY end,cname";
-        if($result = $conn->query($sql)){
+        $sql = "SELECT * FROM camps WHERE end >= DATE_SUB(NOW(), INTERVAL 1 WEEK) ORDER BY end, cname";
+if($result = $conn->query($sql)){
 
             $num = $result->num_rows;
             session_start();
             for ($i = 0; $i < $num; $i++) {
                 $row = $result->fetch_assoc();
                 $cid = $row['cid'];
-                echo '<div class="container"><a href="front.php?cid='.$cid .'"><b>'.$row['cname'].':'.$row['specialisation'].'</a></div>'
-                 ;
+                echo '<div class="container"><a href="front.php?cid='.$cid .'"><b>'.$row['cname'].':'.$row['specialisation'].'</a></div>';
             }
         }
         ?>

@@ -24,12 +24,6 @@ function staff($sid,$cid){
         $result=$conn->query($sql);
         return $result->fetch_assoc();
 }
-function update($sid,$cid,$sname,$phone,$address,$email){
-    $conn=conn();
-    $sql="UPDATE staff SET sname='$sname',phone='$phone',
-           address='$address',email='$email' WHERE sid='$sid' AND cid='$cid'";
-    return $conn->query($sql);
-}
 
         $row=staff($sid,$cid);
         echo "<table><tr><tr><td>SID</td><td>".$row['sid']."</td></tr>";
@@ -39,7 +33,6 @@ function update($sid,$cid,$sname,$phone,$address,$email){
         echo "<tr><td>Phone</td><td><input type=text name=phone value='".$row['phone']."'</td></tr></table>";
         echo "<br><input type=submit name=submit value=Edit>";
         ?>
-        <a href="dashs.html">Back</a>
       </form>
 <?php
 if(isset($_POST['submit'])){
@@ -50,10 +43,17 @@ if(isset($_POST['submit'])){
     $row=staff($sid,$cid);
     if($sname==$row['sname']  && $phone==$row['phone'] &&
        $address==$row['address'] && $email==$row['email']){
-        echo "<h2>No Changes Done</h2>";
-    }else if(update($sid,$cid,$sname,$phone,$address,$email)){
-        header("Location:profiles.php");
-        exit();
+        echo "<h3>No Changes Done</h3>";
+    }else {
+      $conn=conn();
+      $sql="UPDATE staff SET sname='$sname',phone='$phone',
+         address='$address',email='$email' WHERE sid='$sid' AND cid='$cid'";
+      if($conn->query($sql)){
+            echo "<span class=success>Done</span>";
+            $_SESSION['sname']=$sname;
+            header("refresh:2;url=profiles.php");
+            exit();
+        }
     }
 }
 ?>

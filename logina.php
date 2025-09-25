@@ -15,25 +15,26 @@
 </html>
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  session_start();
     $name =$_POST['username'];
     $password = $_POST['password'];
-    if ($password==="1234" && $name==="admin") {
-header("Location:dasha.html");
+    if ($password==="camp" && $name==="admin") {
+      $_SESSION['role'] = 'admin';
+header("Location:dasha.php");
             exit();
     }else{
       $conn=mysqli_connect("localhost","root" ,"","camp");
-      session_start();
       $cid=$_SESSION['cid'];
       $sql="SELECT * FROM camps WHERE cid='$cid'";
       if($result=$conn->query($sql)){
         $row=$result->fetch_assoc();
         if($row['doctor']==$name && $row['password']==$password){
-header("Location:dasha.html");
+header("Location:dasha.php");
 exit();
         }else{
-          echo '<h2>Invalid</h2>';
+          echo '<h3>Invalid</h3>';
         }
-      }else{echo '<h2>Invalid</h2>';}
+      }else{echo '<h3>Invalid</h3>';}
     }
          echo"</div>";
  }
